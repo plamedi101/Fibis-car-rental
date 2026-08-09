@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+Disallow: /private/
+Disallow: /*.json$
+
+# Règles spécifiques pour Google
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+# Sitemap
+Sitemap: https://fibis-car-rental.vercel.app/sitemap.xml
