@@ -1,0 +1,597 @@
+import React, { useState, useEffect } from 'react';
+import { Helmet } from 'react-helmet';
+import { FileText, Zap, MapPin, MapPinIcon, Star, Phone, Mail, Download } from 'lucide-react';
+import './App.css';
+
+const FibisCarRental = () => {
+  const [currentPage, setCurrentPage] = useState('home');
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [reservation, setReservation] = useState({
+    fullName: '',
+    email: '',
+    phone: '',
+    pickupLocation: '',
+    pickupDate: '',
+    returnDate: '',
+    selectedCar: null,
+    category: null
+  });
+  const [showInvoice, setShowInvoice] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState('');
+  const [leads, setLeads] = useState(() => {
+    try {
+      const saved = localStorage.getItem('fibisLeads');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+  const [leadForm, setLeadForm] = useState({ name: '', email: '', phone: '' });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('fibisLeads', JSON.stringify(leads));
+    } catch (error) {
+      console.error('Erreur de sauvegarde:', error);
+    }
+  }, [leads]);
+
+  const cars = {
+    standard: [
+      { id: 1, name: 'Toyota Corolla', price: 45, image: '🚗', features: 'Économique, Confortable' },
+      { id: 2, name: 'Hyundai i30', price: 50, image: '🚙', features: 'Spacieuse, Moderne' },
+      { id: 3, name: 'Renault Scenic', price: 55, image: '🚕', features: 'Famille, Pratique' }
+    ],
+    luxury: [
+      { id: 4, name: 'BMW Serie 7', price: 150, image: '✨', features: 'Prestige, Performance' },
+      { id: 5, name: 'Mercedes C-Class', price: 145, image: '💎', features: 'Élégance, Luxe' },
+      { id: 6, name: 'Audi A8', price: 155, image: '⚡', features: 'Technologie, Confort' }
+    ]
+  };
+
+  const testimonials = [
+    { author: 'Jean Dupont', rating: 5, text: 'Service excellent! Voiture impeccable et équipe très professionnelle.', location: 'Paris' },
+    { author: 'Marie Bernard', rating: 5, text: 'La meilleure expérience de location que j\'ai jamais eu. Recommandé!', location: 'Lyon' },
+    { author: 'Ahmed Hassan', rating: 5, text: 'Prix compétitif et processus simple. Merci Fibis!', location: 'Marseille' },
+    { author: 'Sophie Martin', rating: 5, text: 'Voiture de luxe impeccable. Service VIP exceptional.', location: 'Bordeaux' }
+  ];
+
+  const generateInvoice = () => {
+    const invoiceNumber = `INV-${Date.now()}`;
+    const today = new Date().toLocaleDateString('fr-FR');
+    
+    return {
+      number: invoiceNumber,
+      date: today,
+      company: 'Fibis Car Rental',
+      clientName: reservation.fullName,
+      pickupLocation: reservation.pickupLocation,
+      carBrand: reservation.selectedCar?.name,
+      price: reservation.selectedCar?.price,
+      days: Math.ceil((new Date(reservation.returnDate) - new Date(reservation.pickupDate)) / (1000 * 60 * 60 * 24)) || 1
+    };
+  };
+
+  const handleReservation = (e) => {
+    e.preventDefault();
+    if (reservation.fullName && reservation.email && reservation.selectedCar) {
+      setShowInvoice(true);
+    }
+  };
+
+  const handleLeadSubmit = (e) => {
+    e.preventDefault();
+    if (leadForm.name && leadForm.email) {
+      const newLead = {
+        id: Date.now(),
+        ...leadForm,
+        date: new Date().toLocaleDateString('fr-FR')
+      };
+      setLeads([...leads, newLead]);
+      setLeadForm({ name: '', email: '', phone: '' });
+      alert('✅ Merci! Nous vous contacterons bientôt.');
+    }
+  };
+
+  const HomePage = () => (
+    <div className="min-h-screen bg-gradient-to-br from-black via-slate-900 to-black text-white overflow-hidden">
+      <Helmet>
+        <title>FIBIS Car Rental - Location de Voitures Standard et Luxe</title>
+        <meta name="description" content="Louez des voitures standard et de luxe avec FIBIS Car Rental. Service premium, paiement sécurisé PayPal et InstaPay." />
+        <meta name="keywords" content="location voiture, voiture luxe, BMW, Mercedes, Audi, Paris, France" />
+        <meta property="og:title" content="FIBIS Car Rental" />
+        <meta property="og:description" content="Roulez vers l'Excellence avec FIBIS" />
+        <meta property="og:type" content="website" />
+        <meta name="author" content="FIBIS Car Rental" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      </Helmet>
+
+      <div className="relative h-screen flex items-center justify-center">
+        <div className="absolute inset-0 opacity-30">
+          <div className="absolute top-20 left-10 w-96 h-96 bg-blue-500 rounded-full mix-blend-screen filter blur-3xl animate-blob"></div>
+          <div className="absolute bottom-20 right-10 w-96 h-96 bg-purple-500 rounded-full mix-blend-screen filter blur-3xl animate-blob animation-delay-2000"></div>
+        </div>
+        
+        <div className="relative z-10 text-center">
+          <h1 className="text-7xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600 animate-pulse">
+            FIBIS CAR RENTAL
+          </h1>
+          <p className="text-2xl mb-8 text-gray-300">Roulez vers l'Excellence</p>
+          <button 
+            onClick={() => setCurrentPage('booking')}
+            className="px-12 py-4 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full text-xl font-bold hover:shadow-2xl hover:shadow-blue-500/50 transform hover:scale-105 transition-all duration-300"
+          >
+            RÉSERVER MAINTENANT
+          </button>
+        </div>
+      </div>
+
+      <div className="py-20 px-8 relative z-10">
+        <h2 className="text-5xl font-bold text-center mb-16">Nos Collections</h2>
+        
+        <div className="grid md:grid-cols-2 gap-12 max-w-6xl mx-auto">
+          <div 
+            onClick={() => { setCurrentPage('booking'); setSelectedCategory('standard'); }}
+            className="group relative cursor-pointer"
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-2xl blur-xl opacity-0 group-hover:opacity-75 transition duration-1000"></div>
+            <div className="relative bg-slate-800/50 backdrop-blur p-8 rounded-2xl border border-slate-700 hover:border-blue-500 transition">
+              <div className="text-6xl mb-4">🚗</div>
+              <h3 className="text-3xl font-bold mb-4">Voitures Standard</h3>
+              <p className="text-gray-400 mb-6">Confortables, économiques et fiables pour vos déplacements.</p>
+              <ul className="space-y-2 text-sm text-gray-300">
+                <li>✓ À partir de 45€/jour</li>
+                <li>✓ Assurance incluse</li>
+                <li>✓ Service 24/7</li>
+              </ul>
+            </div>
+          </div>
+
+          <div 
+            onClick={() => { setCurrentPage('booking'); setSelectedCategory('luxury'); }}
+            className="group relative cursor-pointer"
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl blur-xl opacity-0 group-hover:opacity-75 transition duration-1000"></div>
+            <div className="relative bg-slate-800/50 backdrop-blur p-8 rounded-2xl border border-slate-700 hover:border-purple-500 transition">
+              <div className="text-6xl mb-4">💎</div>
+              <h3 className="text-3xl font-bold mb-4">Voitures de Luxe</h3>
+              <p className="text-gray-400 mb-6">Prestige, performance et confort absolu pour une expérience unique.</p>
+              <ul className="space-y-2 text-sm text-gray-300">
+                <li>✓ À partir de 145€/jour</li>
+                <li>✓ Service VIP</li>
+                <li>✓ Chauffeur disponible</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="py-20 px-8 bg-slate-900/50 relative z-10">
+        <h2 className="text-5xl font-bold text-center mb-16">Avis de nos Clients</h2>
+        
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
+          {testimonials.map((testimonial, index) => (
+            <div key={index} className="bg-slate-800/50 backdrop-blur p-6 rounded-xl border border-slate-700 hover:border-yellow-500 transition transform hover:scale-105">
+              <div className="flex mb-3">
+                {[...Array(testimonial.rating)].map((_, i) => (
+                  <Star key={i} size={18} className="fill-yellow-400 text-yellow-400" />
+                ))}
+              </div>
+              <p className="text-gray-300 mb-4 italic">"{testimonial.text}"</p>
+              <p className="font-bold text-white">{testimonial.author}</p>
+              <p className="text-sm text-gray-400">{testimonial.location}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <footer className="bg-black/50 border-t border-slate-700 py-8 px-8 relative z-10">
+        <div className="max-w-6xl mx-auto text-center text-gray-400">
+          <p>© 2024 FIBIS Car Rental. Tous droits réservés.</p>
+          <p className="text-sm mt-2">📧 contact@fibiscarrental.com | 📞 +33 1 23 45 67 89</p>
+        </div>
+      </footer>
+    </div>
+  );
+
+  const BookingPage = () => (
+    <div className="min-h-screen bg-black text-white py-12 px-8">
+      <button 
+        onClick={() => setCurrentPage('home')}
+        className="mb-8 px-6 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg transition"
+      >
+        ← Retour
+      </button>
+
+      <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-12">
+        <div className="bg-slate-800/50 backdrop-blur p-8 rounded-2xl border border-slate-700">
+          <h2 className="text-3xl font-bold mb-8">Formulaire de Réservation</h2>
+          
+          <form onSubmit={handleReservation} className="space-y-4">
+            <div>
+              <label className="block text-sm font-bold mb-2">Nom Complet</label>
+              <input 
+                type="text"
+                value={reservation.fullName}
+                onChange={(e) => setReservation({...reservation, fullName: e.target.value})}
+                className="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 text-white focus:border-blue-500 outline-none"
+                placeholder="Jean Dupont"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-bold mb-2">Email</label>
+              <input 
+                type="email"
+                value={reservation.email}
+                onChange={(e) => setReservation({...reservation, email: e.target.value})}
+                className="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 text-white focus:border-blue-500 outline-none"
+                placeholder="jean@email.com"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-bold mb-2">Téléphone</label>
+              <input 
+                type="tel"
+                value={reservation.phone}
+                onChange={(e) => setReservation({...reservation, phone: e.target.value})}
+                className="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 text-white focus:border-blue-500 outline-none"
+                placeholder="+33 6 12 34 56 78"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-bold mb-2">📍 Adresse de Collection</label>
+              <input 
+                type="text"
+                value={reservation.pickupLocation}
+                onChange={(e) => setReservation({...reservation, pickupLocation: e.target.value})}
+                className="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 text-white focus:border-blue-500 outline-none"
+                placeholder="Paris CDG - Terminal 1, Hall B"
+                required
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-bold mb-2">Départ</label>
+                <input 
+                  type="date"
+                  value={reservation.pickupDate}
+                  onChange={(e) => setReservation({...reservation, pickupDate: e.target.value})}
+                  className="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 text-white focus:border-blue-500 outline-none"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-bold mb-2">Retour</label>
+                <input 
+                  type="date"
+                  value={reservation.returnDate}
+                  onChange={(e) => setReservation({...reservation, returnDate: e.target.value})}
+                  className="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 text-white focus:border-blue-500 outline-none"
+                  required
+                />
+              </div>
+            </div>
+
+            <h3 className="text-xl font-bold mt-8 mb-4">Sélectionnez votre Voiture</h3>
+            
+            {selectedCategory && (
+              <div className="space-y-3">
+                {cars[selectedCategory].map(car => (
+                  <div
+                    key={car.id}
+                    onClick={() => setReservation({...reservation, selectedCar: car, category: selectedCategory})}
+                    className={`p-4 rounded-lg border-2 cursor-pointer transition ${
+                      reservation.selectedCar?.id === car.id 
+                        ? 'border-blue-500 bg-blue-500/20' 
+                        : 'border-slate-600 bg-slate-700/50 hover:border-slate-500'
+                    }`}
+                  >
+                    <div className="flex justify-between items-center">
+                      <div className="flex items-center gap-3">
+                        <span className="text-3xl">{car.image}</span>
+                        <div>
+                          <p className="font-bold">{car.name}</p>
+                          <p className="text-sm text-gray-400">{car.features}</p>
+                        </div>
+                      </div>
+                      <p className="text-lg font-bold text-blue-400">{car.price}€/jour</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <button 
+              type="submit"
+              className="w-full mt-8 py-3 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg font-bold hover:shadow-lg hover:shadow-blue-500/50 transform hover:scale-105 transition"
+            >
+              GÉNÉRER FACTURE
+            </button>
+          </form>
+        </div>
+
+        {showInvoice && (
+          <div className="bg-white text-black p-12 rounded-2xl shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div className="mb-8 pb-8 border-b-2 border-gray-300">
+              <div className="flex justify-between items-start">
+                <div>
+                  <h1 className="text-4xl font-black text-blue-600 mb-2">FIBIS</h1>
+                  <p className="text-gray-600 font-semibold">Car Rental</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm text-gray-600">Facture N°</p>
+                  <p className="text-lg font-bold">{generateInvoice().number}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-8 mb-8">
+              <div>
+                <p className="text-xs text-gray-600 uppercase font-bold mb-2">Client</p>
+                <p className="font-bold text-lg">{reservation.fullName}</p>
+                <p className="text-sm text-gray-600">{reservation.email}</p>
+                <p className="text-sm text-gray-600">{reservation.phone}</p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-600 uppercase font-bold mb-2">Lieu de Collection</p>
+                <p className="font-bold flex items-center gap-2">
+                  <MapPin size={18} className="text-blue-600" />
+                  {reservation.pickupLocation}
+                </p>
+              </div>
+            </div>
+
+            <div className="mb-8 p-4 bg-gray-100 rounded-lg">
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                  <p className="text-xs text-gray-600 uppercase font-bold">Marque du Véhicule</p>
+                  <p className="text-lg font-bold">{reservation.selectedCar?.name}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-600 uppercase font-bold">Période</p>
+                  <p className="text-lg font-bold">{generateInvoice().days} jour(s)</p>
+                </div>
+              </div>
+            </div>
+
+            <table className="w-full mb-8">
+              <thead>
+                <tr className="border-b-2 border-gray-300">
+                  <th className="text-left py-2 text-sm font-bold text-gray-600">Description</th>
+                  <th className="text-right py-2 text-sm font-bold text-gray-600">Montant</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr className="border-b border-gray-200">
+                  <td className="py-3">Location ({generateInvoice().days} jour(s) × {reservation.selectedCar?.price}€)</td>
+                  <td className="text-right font-bold">{generateInvoice().days * reservation.selectedCar?.price}€</td>
+                </tr>
+                <tr className="border-b border-gray-200">
+                  <td className="py-3">Assurance</td>
+                  <td className="text-right font-bold">25€</td>
+                </tr>
+                <tr className="bg-blue-50">
+                  <td className="py-3 font-bold">TOTAL</td>
+                  <td className="text-right text-xl font-black text-blue-600">{generateInvoice().days * reservation.selectedCar?.price + 25}€</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div className="mb-8">
+              <p className="text-xs text-gray-600 uppercase font-bold mb-4">Mode de Paiement</p>
+              <div className="space-y-2">
+                <label className="flex items-center p-3 border-2 border-slate-300 rounded-lg cursor-pointer hover:bg-blue-50">
+                  <input 
+                    type="radio" 
+                    name="payment" 
+                    value="paypal"
+                    checked={paymentMethod === 'paypal'}
+                    onChange={(e) => setPaymentMethod(e.target.value)}
+                    className="w-4 h-4 text-blue-600"
+                  />
+                  <span className="ml-3 font-semibold">💳 Carte Bancaire (PayPal)</span>
+                </label>
+                <label className="flex items-center p-3 border-2 border-slate-300 rounded-lg cursor-pointer hover:bg-blue-50">
+                  <input 
+                    type="radio" 
+                    name="payment" 
+                    value="instapay"
+                    checked={paymentMethod === 'instapay'}
+                    onChange={(e) => setPaymentMethod(e.target.value)}
+                    className="w-4 h-4 text-blue-600"
+                  />
+                  <span className="ml-3 font-semibold">📱 InstaPay</span>
+                </label>
+              </div>
+            </div>
+
+            <button 
+              onClick={() => {
+                if (paymentMethod) {
+                  alert(`✅ Paiement via ${paymentMethod === 'paypal' ? 'PayPal' : 'InstaPay'} confirmé!\n\nVotre réservation est confirmée.`);
+                  setShowInvoice(false);
+                  setCurrentPage('home');
+                }
+              }}
+              className="w-full py-3 bg-gradient-to-r from-green-500 to-blue-600 text-white font-bold rounded-lg hover:shadow-lg transition disabled:opacity-50"
+              disabled={!paymentMethod}
+            >
+              💰 PAYER MAINTENANT
+            </button>
+
+            <button 
+              onClick={() => window.print()}
+              className="w-full mt-2 py-2 border-2 border-blue-600 text-blue-600 font-bold rounded-lg hover:bg-blue-50 transition flex items-center justify-center gap-2"
+            >
+              <Download size={18} /> TÉLÉCHARGER PDF
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+
+  const LeadsPage = () => (
+    <div className="min-h-screen bg-black text-white py-12 px-8">
+      <button 
+        onClick={() => setCurrentPage('home')}
+        className="mb-8 px-6 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg transition"
+      >
+        ← Retour
+      </button>
+
+      <div className="max-w-4xl mx-auto">
+        <h2 className="text-4xl font-bold mb-8 text-center">Contactez-nous pour une Offre Spéciale</h2>
+
+        <div className="grid md:grid-cols-2 gap-8">
+          <div className="bg-slate-800/50 backdrop-blur p-8 rounded-2xl border border-slate-700">
+            <h3 className="text-2xl font-bold mb-6">Formulaire de Contact</h3>
+            
+            <form onSubmit={handleLeadSubmit} className="space-y-4">
+              <div>
+                <label className="block text-sm font-bold mb-2">Nom</label>
+                <input 
+                  type="text"
+                  value={leadForm.name}
+                  onChange={(e) => setLeadForm({...leadForm, name: e.target.value})}
+                  className="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 text-white focus:border-blue-500 outline-none"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-bold mb-2">Email</label>
+                <input 
+                  type="email"
+                  value={leadForm.email}
+                  onChange={(e) => setLeadForm({...leadForm, email: e.target.value})}
+                  className="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 text-white focus:border-blue-500 outline-none"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-bold mb-2">Téléphone</label>
+                <input 
+                  type="tel"
+                  value={leadForm.phone}
+                  onChange={(e) => setLeadForm({...leadForm, phone: e.target.value})}
+                  className="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 text-white focus:border-blue-500 outline-none"
+                />
+              </div>
+
+              <button 
+                type="submit"
+                className="w-full mt-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg font-bold hover:shadow-lg hover:shadow-blue-500/50 transition"
+              >
+                ENVOYER
+              </button>
+            </form>
+          </div>
+
+          <div className="bg-slate-800/50 backdrop-blur p-8 rounded-2xl border border-slate-700">
+            <h3 className="text-2xl font-bold mb-6">Base de Données - Leads Collectés</h3>
+            
+            {leads.length === 0 ? (
+              <p className="text-gray-400 text-center py-8">Aucun lead pour le moment</p>
+            ) : (
+              <div className="space-y-3 max-h-96 overflow-y-auto">
+                {leads.map(lead => (
+                  <div key={lead.id} className="bg-slate-700/50 p-4 rounded-lg border border-slate-600">
+                    <p className="font-bold text-blue-400">{lead.name}</p>
+                    <p className="text-sm text-gray-400">{lead.email}</p>
+                    <p className="text-sm text-gray-400">{lead.phone}</p>
+                    <p className="text-xs text-gray-500 mt-2">Collecté le: {lead.date}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <div className="mt-6 p-4 bg-blue-500/20 rounded-lg border border-blue-500/50">
+              <p className="text-sm font-bold">📊 Total Leads: <span className="text-blue-400">{leads.length}</span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  const Navigation = () => (
+    <nav className="fixed top-0 w-full bg-black/80 backdrop-blur border-b border-slate-700 z-50">
+      <div className="max-w-7xl mx-auto px-8 py-4 flex items-center justify-between">
+        <button 
+          onClick={() => setCurrentPage('home')}
+          className="text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600"
+        >
+          FIBIS
+        </button>
+        
+        <div className="flex gap-6">
+          <button 
+            onClick={() => setCurrentPage('home')}
+            className={`px-4 py-2 rounded-lg transition ${currentPage === 'home' ? 'bg-blue-600' : 'hover:bg-slate-700'}`}
+          >
+            Accueil
+          </button>
+          <button 
+            onClick={() => setCurrentPage('booking')}
+            className={`px-4 py-2 rounded-lg transition ${currentPage === 'booking' ? 'bg-blue-600' : 'hover:bg-slate-700'}`}
+          >
+            Réserver
+          </button>
+          <button 
+            onClick={() => setCurrentPage('leads')}
+            className={`px-4 py-2 rounded-lg transition ${currentPage === 'leads' ? 'bg-blue-600' : 'hover:bg-slate-700'}`}
+          >
+            Leads
+          </button>
+        </div>
+      </div>
+    </nav>
+  );
+
+  return (
+    <div className="min-h-screen bg-black">
+      <style>{`
+        @keyframes blob {
+          0%, 100% { transform: translate(0, 0) scale(1); }
+          33% { transform: translate(30px, -50px) scale(1.1); }
+          66% { transform: translate(-20px, 20px) scale(0.9); }
+        }
+        
+        @keyframes float {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-20px); }
+        }
+        
+        .animate-blob {
+          animation: blob 7s infinite;
+        }
+        
+        .animation-delay-2000 {
+          animation-delay: 2s;
+        }
+        
+        .animate-float {
+          animation: float 3s ease-in-out infinite;
+        }
+      `}</style>
+      
+      <Navigation />
+      
+      <div className="pt-16">
+        {currentPage === 'home' && <HomePage />}
+        {currentPage === 'booking' && <BookingPage />}
+        {currentPage === 'leads' && <LeadsPage />}
+      </div>
+    </div>
+  );
+};
+
+export default FibisCarRental;
