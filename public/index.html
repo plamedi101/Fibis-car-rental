@@ -1,145 +1,44 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FIBIS Car Rental - Location de Voitures</title>
+    <title>FIBIS Car Rental</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #000 0%, #1a1a2e 100%);
-            color: white;
-            min-height: 100vh;
-        }
-        nav {
-            background: rgba(0,0,0,0.9);
-            padding: 20px;
-            text-align: center;
-            border-bottom: 1px solid #333;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        .nav-title {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #60a5fa;
-            margin-bottom: 15px;
-        }
-        .nav-links {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-        }
-        button {
-            background: #2563eb;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        button:hover { background: #1d4ed8; }
+        body { background: #000; color: #fff; font-family: Arial; }
+        nav { background: #111; padding: 20px; text-align: center; }
+        .nav-title { font-size: 2rem; color: #60a5fa; font-weight: bold; margin-bottom: 10px; }
+        .nav-links { display: flex; justify-content: center; gap: 10px; }
+        .nav-links button { background: #2563eb; color: white; border: none; padding: 10px 20px; cursor: pointer; border-radius: 5px; }
         .page { display: none; padding: 40px 20px; }
         .page.active { display: block; }
-        .container { max-width: 1200px; margin: 0 auto; }
-        .hero {
-            text-align: center;
-            padding: 100px 20px;
-        }
-        .hero h1 {
-            font-size: 3.5rem;
-            margin-bottom: 20px;
-            background: linear-gradient(to right, #60a5fa, #a855f7);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .hero p { font-size: 1.5rem; margin-bottom: 30px; color: #d1d5db; }
-        .btn {
-            background: linear-gradient(to right, #3b82f6, #a855f7);
-            padding: 15px 40px;
-            font-size: 1.1rem;
-            border-radius: 50px;
-            box-shadow: 0 0 30px rgba(59, 130, 246, 0.5);
-        }
-        .collections {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            padding: 40px 20px;
-        }
-        .card {
-            background: rgba(30, 41, 59, 0.8);
-            padding: 30px;
-            border-radius: 10px;
-            border: 1px solid #334155;
-            cursor: pointer;
-        }
-        .card:hover { border-color: #3b82f6; transform: translateY(-5px); }
-        .card h3 { font-size: 1.5rem; margin-bottom: 15px; }
+        .hero { text-align: center; padding: 80px 20px; }
+        .hero h1 { font-size: 3rem; margin-bottom: 20px; color: #60a5fa; }
+        .hero p { font-size: 1.5rem; margin-bottom: 30px; color: #aaa; }
+        .btn { background: #2563eb; color: white; padding: 15px 40px; border: none; border-radius: 50px; cursor: pointer; font-size: 1rem; font-weight: bold; }
+        .btn:hover { background: #1d4ed8; }
+        .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; padding: 40px 20px; }
+        .card { background: #1a1a2e; padding: 30px; border-radius: 10px; border: 1px solid #333; cursor: pointer; }
+        .card:hover { border-color: #60a5fa; }
         .card-icon { font-size: 3rem; margin-bottom: 10px; }
-        .form-page {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            padding: 40px 20px;
-        }
-        .form-container {
-            background: rgba(30, 41, 59, 0.8);
-            padding: 30px;
-            border-radius: 10px;
-            border: 1px solid #334155;
-        }
-        .form-container h2 { margin-bottom: 20px; }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        .form-group label {
-            display: block;
-            font-size: 0.9rem;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        .form-group input {
-            width: 100%;
-            background: #1e293b;
-            border: 1px solid #334155;
-            color: white;
-            padding: 10px;
-            border-radius: 5px;
-        }
-        .car-option {
-            background: rgba(30, 41, 59, 0.7);
-            padding: 15px;
-            border-radius: 5px;
-            border: 2px solid #334155;
-            cursor: pointer;
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-        }
-        .car-option.selected { border-color: #3b82f6; background: rgba(59, 130, 246, 0.1); }
-        .invoice {
-            background: white;
-            color: black;
-            padding: 30px;
-            border-radius: 10px;
-            display: none;
-            max-height: 500px;
-            overflow-y: auto;
-        }
+        .card h3 { margin-bottom: 10px; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; padding: 40px 20px; }
+        .form-box { background: #1a1a2e; padding: 30px; border-radius: 10px; border: 1px solid #333; }
+        .form-box h2 { margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .form-group input { width: 100%; background: #0f0f1e; border: 1px solid #333; color: white; padding: 10px; border-radius: 5px; }
+        .car-option { background: #0f0f1e; padding: 15px; margin-bottom: 10px; border: 2px solid #333; cursor: pointer; display: flex; justify-content: space-between; border-radius: 5px; }
+        .car-option.selected { border-color: #60a5fa; background: rgba(96, 165, 250, 0.1); }
+        .invoice { background: white; color: black; padding: 30px; border-radius: 10px; display: none; max-height: 400px; overflow-y: auto; }
         .invoice.show { display: block; }
-        @media (max-width: 768px) {
-            .form-page { grid-template-columns: 1fr; }
-            .hero h1 { font-size: 2rem; }
-        }
+        @media (max-width: 768px) { .form-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
     <nav>
-        <div class="nav-title">FIBIS</div>
+        <div class="nav-title">🚗 FIBIS</div>
         <div class="nav-links">
             <button onclick="showPage('home')">Accueil</button>
             <button onclick="showPage('booking')">Réserver</button>
@@ -147,14 +46,217 @@
         </div>
     </nav>
 
+    <!-- HOME -->
     <div id="home" class="page active">
         <div class="hero">
             <h1>FIBIS CAR RENTAL</h1>
             <p>Roulez vers l'Excellence</p>
             <button class="btn" onclick="showPage('booking')">RÉSERVER MAINTENANT</button>
         </div>
-        <div class="container collections">
+        <div class="cards">
             <div class="card" onclick="showPage('booking')">
                 <div class="card-icon">🚗</div>
                 <h3>Voitures Standard</h3>
-                
+                <p>Confortables et économiques</p>
+                <p>✓ À partir de 45€/jour</p>
+            </div>
+            <div class="card" onclick="showPage('booking')">
+                <div class="card-icon">💎</div>
+                <h3>Voitures de Luxe</h3>
+                <p>Prestige et performance</p>
+                <p>✓ À partir de 145€/jour</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOOKING -->
+    <div id="booking" class="page">
+        <div class="form-grid">
+            <div class="form-box">
+                <h2>Réservation</h2>
+                <div class="form-group">
+                    <label>Nom</label>
+                    <input type="text" id="name" placeholder="Jean Dupont">
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="email" placeholder="jean@email.com">
+                </div>
+                <div class="form-group">
+                    <label>Téléphone</label>
+                    <input type="tel" id="phone" placeholder="+33 6 12 34 56 78">
+                </div>
+                <div class="form-group">
+                    <label>📍 Adresse</label>
+                    <input type="text" id="address" placeholder="Paris CDG">
+                </div>
+                <div class="form-group">
+                    <label>Départ</label>
+                    <input type="date" id="startDate">
+                </div>
+                <div class="form-group">
+                    <label>Retour</label>
+                    <input type="date" id="endDate">
+                </div>
+
+                <h3 style="margin-top: 20px; margin-bottom: 15px;">Voitures</h3>
+                <div id="cars"></div>
+
+                <button class="btn" onclick="createInvoice()" style="width: 100%; margin-top: 20px;">GÉNÉRER FACTURE</button>
+            </div>
+
+            <div class="invoice" id="invoice"></div>
+        </div>
+    </div>
+
+    <!-- LEADS -->
+    <div id="leads" class="page">
+        <div class="form-grid">
+            <div class="form-box">
+                <h2>Nous Contacter</h2>
+                <div class="form-group">
+                    <label>Nom</label>
+                    <input type="text" id="leadName">
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="leadEmail">
+                </div>
+                <div class="form-group">
+                    <label>Téléphone</label>
+                    <input type="tel" id="leadPhone">
+                </div>
+                <button class="btn" onclick="saveLead()" style="width: 100%; margin-top: 20px;">ENVOYER</button>
+            </div>
+
+            <div class="form-box">
+                <h2>Leads Collectés</h2>
+                <div id="leadsList" style="max-height: 300px; overflow-y: auto;"></div>
+                <p style="margin-top: 20px; color: #60a5fa;">📊 Total: <span id="count">0</span></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var cars = [
+            {name: 'Toyota Corolla', price: 45},
+            {name: 'Hyundai i30', price: 50},
+            {name: 'Renault Scenic', price: 55},
+            {name: 'BMW Serie 7', price: 150},
+            {name: 'Mercedes C-Class', price: 145},
+            {name: 'Audi A8', price: 155}
+        ];
+
+        var selectedCar = null;
+        var leads = JSON.parse(localStorage.getItem('fibisLeads') || '[]');
+
+        function showPage(name) {
+            var pages = document.querySelectorAll('.page');
+            for(var i = 0; i < pages.length; i++) {
+                pages[i].classList.remove('active');
+            }
+            document.getElementById(name).classList.add('active');
+            if(name === 'booking') loadCars();
+            if(name === 'leads') showLeads();
+        }
+
+        function loadCars() {
+            var html = '';
+            for(var i = 0; i < cars.length; i++) {
+                html += '<div class="car-option" onclick="selectCar('+i+')">';
+                html += '<span>' + cars[i].name + '</span>';
+                html += '<span>' + cars[i].price + '€/jour</span>';
+                html += '</div>';
+            }
+            document.getElementById('cars').innerHTML = html;
+        }
+
+        function selectCar(index) {
+            var options = document.querySelectorAll('.car-option');
+            for(var i = 0; i < options.length; i++) {
+                options[i].classList.remove('selected');
+            }
+            options[index].classList.add('selected');
+            selectedCar = cars[index];
+        }
+
+        function createInvoice() {
+            if(!selectedCar) { alert('Sélectionnez une voiture!'); return; }
+            var name = document.getElementById('name').value;
+            var email = document.getElementById('email').value;
+            var address = document.getElementById('address').value;
+            var start = document.getElementById('startDate').value;
+            var end = document.getElementById('endDate').value;
+
+            if(!name || !email || !address || !start || !end) {
+                alert('Remplissez tous les champs!');
+                return;
+            }
+
+            var days = Math.ceil((new Date(end) - new Date(start)) / (1000 * 60 * 60 * 24)) || 1;
+            var total = (days * selectedCar.price) + 25;
+
+            var html = '<h2 style="color: #2563eb; margin-bottom: 20px;">FACTURE</h2>';
+            html += '<p><b>Client:</b> ' + name + '</p>';
+            html += '<p><b>Email:</b> ' + email + '</p>';
+            html += '<p><b>Lieu:</b> ' + address + '</p>';
+            html += '<p><b>Voiture:</b> ' + selectedCar.name + '</p>';
+            html += '<p><b>Jours:</b> ' + days + '</p>';
+            html += '<hr style="margin: 20px 0;">';
+            html += '<p><b>Location:</b> ' + (days * selectedCar.price) + '€</p>';
+            html += '<p><b>Assurance:</b> 25€</p>';
+            html += '<p style="font-size: 1.5rem; color: #2563eb; font-weight: bold; margin-top: 20px;">TOTAL: ' + total + '€</p>';
+            html += '<button class="btn" onclick="payNow()" style="margin-top: 20px; width: 100%;">💰 PAYER</button>';
+
+            document.getElementById('invoice').innerHTML = html;
+            document.getElementById('invoice').classList.add('show');
+        }
+
+        function payNow() {
+            alert('✅ Paiement confirmé!');
+            document.getElementById('invoice').classList.remove('show');
+        }
+
+        function saveLead() {
+            var name = document.getElementById('leadName').value;
+            var email = document.getElementById('leadEmail').value;
+            var phone = document.getElementById('leadPhone').value;
+
+            if(!name || !email) { alert('Nom et email requis!'); return; }
+
+            leads.push({
+                name: name,
+                email: email,
+                phone: phone,
+                date: new Date().toLocaleDateString('fr-FR')
+            });
+
+            localStorage.setItem('fibisLeads', JSON.stringify(leads));
+            document.getElementById('leadName').value = '';
+            document.getElementById('leadEmail').value = '';
+            document.getElementById('leadPhone').value = '';
+            alert('✅ Lead enregistré!');
+            showLeads();
+        }
+
+        function showLeads() {
+            var html = '';
+            if(leads.length === 0) {
+                html = '<p style="color: #999;">Aucun lead</p>';
+            } else {
+                for(var i = 0; i < leads.length; i++) {
+                    html += '<div style="background: #0f0f1e; padding: 10px; margin-bottom: 10px; border-radius: 5px;">';
+                    html += '<p style="color: #60a5fa; font-weight: bold;">' + leads[i].name + '</p>';
+                    html += '<p style="font-size: 0.9rem; color: #999;">' + leads[i].email + '</p>';
+                    html += '<p style="font-size: 0.8rem; color: #666;">' + leads[i].date + '</p>';
+                    html += '</div>';
+                }
+            }
+            document.getElementById('leadsList').innerHTML = html;
+            document.getElementById('count').textContent = leads.length;
+        }
+
+        showLeads();
+    </script>
+</body>
+</html>
