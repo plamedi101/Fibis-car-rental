@@ -1,46 +1,160 @@
 <!DOCTYPE html>
 <html lang="fr">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
-    
-    <!-- SEO Meta Tags -->
-    <title>FIBIS Car Rental - Location de Voitures Standard et Luxe</title>
-    <meta name="description" content="Louez des voitures standard et de luxe avec FIBIS Car Rental. Service premium, paiement sécurisé PayPal et InstaPay." />
-    <meta name="keywords" content="location voiture, voiture luxe, BMW, Mercedes, Audi, Paris, France, réservation voiture" />
-    <meta name="author" content="FIBIS Car Rental" />
-    <meta property="og:title" content="FIBIS Car Rental - Roulez vers l'Excellence" />
-    <meta property="og:description" content="Louez des voitures premium avec FIBIS. Service VIP et paiement sécurisé." />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="/logo.png" />
-    <meta name="robots" content="index, follow" />
-    <meta name="language" content="French" />
-    
-    <!-- Favicon -->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75' fill='%233b82f6'>🚗</text></svg>" />
-    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FIBIS Car Rental - Location de Voitures</title>
     <style>
-      body {
-        margin: 0;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-          'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-          sans-serif;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-        background-color: #000000;
-      }
-
-      code {
-        font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-          monospace;
-      }
-
-      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #000 0%, #1a1a2e 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        nav {
+            background: rgba(0,0,0,0.9);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid #333;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .nav-title {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #60a5fa;
+            margin-bottom: 15px;
+        }
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover { background: #1d4ed8; }
+        .page { display: none; padding: 40px 20px; }
+        .page.active { display: block; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .hero {
+            text-align: center;
+            padding: 100px 20px;
+        }
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, #60a5fa, #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero p { font-size: 1.5rem; margin-bottom: 30px; color: #d1d5db; }
+        .btn {
+            background: linear-gradient(to right, #3b82f6, #a855f7);
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.5);
+        }
+        .collections {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            padding: 40px 20px;
+        }
+        .card {
+            background: rgba(30, 41, 59, 0.8);
+            padding: 30px;
+            border-radius: 10px;
+            border: 1px solid #334155;
+            cursor: pointer;
+        }
+        .card:hover { border-color: #3b82f6; transform: translateY(-5px); }
+        .card h3 { font-size: 1.5rem; margin-bottom: 15px; }
+        .card-icon { font-size: 3rem; margin-bottom: 10px; }
+        .form-page {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 40px 20px;
+        }
+        .form-container {
+            background: rgba(30, 41, 59, 0.8);
+            padding: 30px;
+            border-radius: 10px;
+            border: 1px solid #334155;
+        }
+        .form-container h2 { margin-bottom: 20px; }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input {
+            width: 100%;
+            background: #1e293b;
+            border: 1px solid #334155;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .car-option {
+            background: rgba(30, 41, 59, 0.7);
+            padding: 15px;
+            border-radius: 5px;
+            border: 2px solid #334155;
+            cursor: pointer;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .car-option.selected { border-color: #3b82f6; background: rgba(59, 130, 246, 0.1); }
+        .invoice {
+            background: white;
+            color: black;
+            padding: 30px;
+            border-radius: 10px;
+            display: none;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .invoice.show { display: block; }
+        @media (max-width: 768px) {
+            .form-page { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 2rem; }
+        }
     </style>
-  </head>
-  <body>
-    <noscript>Vous avez besoin d'activer JavaScript pour utiliser FIBIS Car Rental.</noscript>
-    <div id="root"></div>
-  </body>
-</html>
+</head>
+<body>
+    <nav>
+        <div class="nav-title">FIBIS</div>
+        <div class="nav-links">
+            <button onclick="showPage('home')">Accueil</button>
+            <button onclick="showPage('booking')">Réserver</button>
+            <button onclick="showPage('leads')">Leads</button>
+        </div>
+    </nav>
+
+    <div id="home" class="page active">
+        <div class="hero">
+            <h1>FIBIS CAR RENTAL</h1>
+            <p>Roulez vers l'Excellence</p>
+            <button class="btn" onclick="showPage('booking')">RÉSERVER MAINTENANT</button>
+        </div>
+        <div class="container collections">
+            <div class="card" onclick="showPage('booking')">
+                <div class="card-icon">🚗</div>
+                <h3>Voitures Standard</h3>
+                
